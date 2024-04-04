@@ -16,3 +16,16 @@ export type Result = {
     total_listings: string;
   };
 };
+
+export type FlightResult = {
+  origin: string;
+  destination: string;
+  departureDate: string;
+  returnDate: string;
+  price: number;
+  // Add other properties as needed
+};
+
+
+
+

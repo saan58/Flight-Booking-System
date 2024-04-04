@@ -141,12 +141,20 @@ export async function fetchResults(searchParams: SearchParams) {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.results.length === 0) return;
-      const result: Result = data.results[0];
+      if (!data.results || data.results.length === 0) {
+        // Handle case where results are undefined or empty
+        console.log("No results found");
+        return null; // Return null or appropriate value
+      }
 
+      const result: Result = data.results[0];
       return result;
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      // Handle fetch or parsing errors
+      console.error("Error fetching results:", err);
+      return null; // Return null or appropriate value
+    });
 
   return response;
 }
