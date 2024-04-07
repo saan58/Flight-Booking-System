@@ -20,7 +20,7 @@ async function SearchPage({ searchParams }: Props) {
 
   const results = await fetchResults(searchParams);
 
-  if (!results) return <div>No results...</div>;
+  if (!results ||!results.content ||!results.content.listings) return <div>No results...</div>;
 
   return (
     <section>

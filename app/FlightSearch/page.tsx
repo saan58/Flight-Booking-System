@@ -1,101 +1,120 @@
-"use client";
-import { useState } from 'react';
-import { fetchFlightResults } from '@/lib/fetchFlightResults';
-import { FlightResult } from "@/typings";
+// import React from 'react'
+import { fetchFlightResults } from "@/lib/fetchFlightResults";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+
 
 type Props = {
-  searchParams: FlightSearchParams;
-};
-
-export type FlightSearchParams = {
-  url: URL;
-  origin: string,
-  destination: string,
-  departureDate: string ,
-  returnDate: string,
-  passengers: number
-};
-
-export default function FlightSearch() {
-  const [searchParams, setSearchParams] = useState<FlightSearchParams>({ // Specify FlightSearchParams type
-    url: new URL('http://localhost:3000/FlightSearch'), // Initialize URL with a default value
-    origin: '',
-    destination: '',
-    departureDate: '',
-    returnDate: '',
-    passengers: 1,
-  });
-  const [results, setResults] = useState<FlightResult[] | null>(null); // Specify Flight[] type for results state
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null); // Specify string type for error state
-
-  const handleSearch = async () => {
-    setLoading(true);
-    setError(null); // Reset error state
-    try {
-      const flightResults = await fetchFlightResults(searchParams);
-      if (flightResults === null) {
-        setError('Error fetching flight results. Please try again.');
-      } else {
-        setResults(flightResults);
-      }
-    } catch (error) {
-      setError('Error fetching flight results. Please try again.');
-      console.error('Error fetching flight results:', error);
-    } finally {
-      setLoading(false);
-    }
+    searchParams: SearchParams;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Specify event type
-    const { name, value } = e.target;
-    setSearchParams({ ...searchParams, [name]: value });
+
+  export type SearchParams = {
+    url: URL;
+    type: string;
+    adults: string;
+    to: string;
+    from: string;
+    depart: string;
+    return: string;
+    fromLocationName: string;
+    toLocationName: string;
+    
   };
 
-  return (
-    <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '16px' }}> {/* Apply CSS here */}
-      <h1 style={{ color: 'blue' }}>Flight Search</h1> {/* Apply CSS here */}
-      <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
-        <label>
-          Origin:
-          <input type="text" name="origin" value={searchParams.origin} onChange={handleChange} required />
-        </label>
-        <label>
-          Destination:
-          <input type="text" name="destination" value={searchParams.destination} onChange={handleChange} required />
-        </label>
-        <label>
-          Departure Date:
-          <input type="date" name="departureDate" value={searchParams.departureDate} onChange={handleChange} required />
-        </label>
-        <label>
-          Return Date:
-          <input type="date" name="returnDate" value={searchParams.returnDate} onChange={handleChange} required />
-        </label>
-        <label>
-          Passengers:
-          <input type="number" name="passengers" value={searchParams.passengers} onChange={handleChange} min="1" />
-        </label>
-        <button type="submit" disabled={loading}>Search</button>
-      </form>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
 
-      {results && (
-        <div>
-          <h2>Search Results</h2>
-          {/* Check if results is not empty before mapping */}
-          {results.length > 0 && results.map((flight, index) => (
-            <div key={index}>
-              <p>{flight.origin} to {flight.destination}</p>
-              <p>Departure: {flight.departureDate}</p>
-              <p>Return: {flight.returnDate}</p>
-              <p>Price: {flight.price}</p>
-            </div>
-          ))}
+async function FlightSearchPage({searchParams}: Props) {
+    if (!searchParams.url) return notFound();
+
+    const results = await fetchFlightResults(searchParams);
+
+    if (!results ||!results.content ||!results.content.flights) return <div>No results...</div>;
+    // if(!results) return <div>No results....</div>
+
+    // console.log(results);
+
+    return (
+      <section>
+        <div className="mx-auto max-w-7xl p-6 lg:px-8">
+          <h1 className="text-4xl font-bold pb-3">Your Flight Results</h1>
+  
+          <h2 className="pb-3">
+            Dates of Flight trip:
+            <span className="italic ml-2">
+              {searchParams.depart} to {searchParams.return}
+            </span>
+          </h2>
+  
+          <hr className="mb-5" />
+  
+          {/* <h3 className="font-semibold text-xl">
+            {results.content.total_listings}
+          </h3> */}
+  
+          <div className="space-y-2 mt-5">
+            {results.content.flights.map((item, i) => (
+              <div
+                key={i}
+                className="flex space-y-2 justify-between space-x-4 p-5 border rounded-lg"
+              >
+                <img
+                  src={item.url}
+                  alt="image of property"
+                  className="h-44 w-44 rounded-lg"
+                />
+  
+                <div className="flex flex-1 space-x-5 justify-between">
+                  <div>
+                    <p className="font-bold">{item.depart_time0}</p>
+                    <p className="text-xs">{item.depart_airport0}</p>
+                    <p className="text-xs">{item.depart_date0}</p>                       
+                  </div>
+  
+                  <div className="flex items-start justify-end space-x-2 text-center">
+                      <p className="text-xs">{item.duration0}</p>
+                      <p className="text-xs">{item.stops0}</p>
+                    </div>
+
+
+                  <div className="flex flex-col justify-between">
+                    <div className="flex items-start justify-end space-x-2 text-right">
+                      <p className="font-bold">{item.destination_time0}</p>
+                      <p className="text-xs">{item.destination_airport0}</p>
+                      <p className="text-xs">{item.destination_date0}</p>
+                    </div>
+
+
+                    <div>
+                    <p className="font-bold">{item.depart_time1}</p>
+                    <p className="text-xs">{item.depart_airport1}</p>
+                    <p className="text-xs">{item.depart_date1}</p>                       
+                  </div>
+
+                  <div className="flex items-start justify-end space-x-2 text-center">
+                      <p className="text-xs">{item.duration1}</p>
+                      <p className="text-xs">{item.stops1}</p>
+                    </div>
+
+                    <div className="flex items-start justify-end space-x-2 text-right">
+                      <p className="font-bold">{item.destination_time1}</p>
+                      <p className="text-xs">{item.destination_airport1}</p>
+                      <p className="text-xs">{item.destination_date1}</p>
+                    </div>
+
+
+
+                    <div className="text-right">
+                      <p className="text-2xl font-bold">{item.total_price}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      )}
-    </div>
-  );
+      </section>
+    );
 }
+
+export default FlightSearchPage

@@ -139,7 +139,7 @@ function Header() {
             </Transition>
           </Popover>
 
-          <a href="/FlightSearch" className="text-sm font-semibold leading-6 text-white">
+          <a href="/Flights" className="text-sm font-semibold leading-6 text-white">
             Flights
           </a>
           <a href="#" className="text-sm font-semibold leading-6 text-white">

@@ -29,6 +29,8 @@ export async function fetchResults(searchParams: SearchParams) {
           {
             _fn: "xpath",
             _args: ["//div[@data-testid='property-card-container']"],
+            
+            
           },
         ],
         _items: {

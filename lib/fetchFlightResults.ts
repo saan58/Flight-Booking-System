@@ -1,16 +1,16 @@
-import { FlightSearchParams } from "@/app/FlightSearch/page";
+import { SearchParams } from "@/app/FlightSearch/page";
 import { FlightResult } from "@/typings";
 
-export async function fetchFlightResults(searchFlightsParams: FlightSearchParams) {
+export async function fetchFlightResults(searchParams: SearchParams) {
   const username = process.env.OXYLABS_USERNAME;
   const password = process.env.OXYLABS_PASSWORD;
 
   // Prepare the URL based on the provided search parameters
-  const url = new URL('https://example.com/flights/search');
-  Object.keys(searchFlightsParams).forEach((key) => {
-    if (key === "url" || key === "location") return;
+  const url = new URL(searchParams.url);
+  Object.keys(searchParams).forEach((key) => {
+    if (key === "url" || key === "sourceCode") return;
 
-    const value = searchFlightsParams[key as keyof FlightSearchParams];
+    const value = searchParams[key as keyof SearchParams];
 
     if (typeof value === "string") {
       url.searchParams.append(key, value);
@@ -25,88 +25,195 @@ export async function fetchFlightResults(searchFlightsParams: FlightSearchParams
     parse: true,
     render: "html",
     parsing_instructions: {
-      flights: {
+      flights:{
         _fns: [
           {
-            _fn: "css",
-            _args: ["div.flight-results .flight"],
+            _fn: "xpath_one",
+            _args: [".//div[@data-testid='searchresults_card']/text()"]
+
+            
           },
         ],
         _items: {
-          departure_airport: {
+          flexible: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["span.departure-airport"],
+                _fn: "xpath_one",
+                // _args: [".//div[@data-testid='title']/text()"],
+                _args: ["//*[@id='flight-card-0']/div/div/div[1]/div[1]/span/span"]
               },
             ],
           },
-          arrival_airport: {
+          logo: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["span.arrival-airport"],
+                _fn: "xpath_one",
+                _args: [
+                ".//*[@id='flight-card-0']/div/div/div[1]/div[2]/div[1]/div/div/div"
+                  ,
+                ],
               },
             ],
           },
-          departure_time: {
+          depart_time0: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["time.departure-time"],
+                _fn: "xpath_one",
+                _args: [
+                  ".//div[@data-testid='flight_card_segment_departure_time_0']/text()",
+                ],
               },
             ],
           },
-          arrival_time: {
+          depart_airport0: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["time.arrival-time"],
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_departure_airport_0']/text()"],
               },
             ],
           },
-          airline: {
+          depart_date0: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["span.airline"],
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_departure_date_0']/text()"],
+
               },
             ],
           },
-          price: {
+          duration0: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["span.price"],
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_duration_0']/text()"],
               },
             ],
           },
-          link: {
+          stops0: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["a.book-link"],
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_stops_0']/text()"],
+
+              },
+              
+            ],
+          },
+          destination_time0: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_destination_time_0']/text()"],
               },
             ],
           },
-          duration: {
+          destination_airport0: {
             _fns: [
               {
-                _fn: "css_one",
-                _args: ["span.duration"],
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_destination_airport_0']/text()"],
+
               },
             ],
           },
-          // Add more flight details as required
+          destination_date0: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_destination_date_0']/text()"],
+
+              },
+            ],
+          },
+
+
+          depart_time1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [
+                  ".//div[@data-testid='flight_card_segment_departure_time_1']/text()",
+                ],
+              },
+            ],
+          },
+          depart_airport1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_departure_airport_1']/text()"],
+              },
+            ],
+          },
+          depart_date1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_departure_date_1']/text()"],
+
+              },
+            ],
+          },
+          duration1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_duration_1']/text()"],
+              },
+            ],
+          },
+          stops1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_stops_1']/text()"],
+
+              },
+              
+            ],
+          },
+          destination_time1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_destination_time_1']/text()"],
+              },
+            ],
+          },
+          destination_airport1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_destination_airport_1']/text()"],
+
+              },
+            ],
+          },
+          destination_date1: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_segment_destination_date_1']/text()"],
+
+              },
+            ],
+          },
+
+          total_price: {
+            _fns: [
+              {
+                _fn: "xpath_one",
+                _args: [".//div[@data-testid='flight_card_price_total_price']/text()"],
+
+              },
+            ],
+          },
+          
+          
+        
         },
-      },
-      total_flights: {
-        _fns: [
-          {
-            _fn: "css_one",
-            _args: ["h1.search-results-count"],
-          },
-        ],
+
       },
     },
   };
@@ -126,12 +233,12 @@ export async function fetchFlightResults(searchFlightsParams: FlightSearchParams
     .then((response) => response.json())
     .then((data) => {
       if (!data.results || data.results.length === 0) {
-// Handle case where results are undefined or empty
         console.log("No flight results found");
         return null; // Return null or appropriate value
       }
 
       const result: FlightResult = data.results[0];
+
       return result;
     })
     .catch((err) => {
@@ -140,5 +247,6 @@ export async function fetchFlightResults(searchFlightsParams: FlightSearchParams
       return null; // Return null or appropriate value
     });
 
-    return response ? [response] : null;
+    // return response ? [response] : null;
+    return response;
 }
